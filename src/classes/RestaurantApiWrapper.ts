@@ -43,11 +43,12 @@ class RestaurantApiWrapper {
         'Content-Type': 'application/json',
       },
     };
-    const restaurants = await this.fetchData('restaurants', options).catch(
-      err => {
-        throw new Error(err);
-      }
-    );
+    const restaurants = await this.fetchData<Restaurants>(
+      'restaurants',
+      options
+    ).catch(err => {
+      throw new Error(err);
+    });
     return restaurants;
   }
 
@@ -58,7 +59,7 @@ class RestaurantApiWrapper {
         'Content-Type': 'application/json',
       },
     };
-    const menu = await this.fetchData(
+    const menu = await this.fetchData<DailyMenu>(
       `restaurants/daily/${restaurantId}/'fi'`,
       options
     ).catch(err => {
@@ -67,10 +68,10 @@ class RestaurantApiWrapper {
     return menu;
   }
 
-  private async fetchData(
+  private async fetchData<T>(
     endpoint: Endpoint,
-    options: RequestInit
-  ): Promise<any> {
+    options?: RequestInit
+  ): Promise<T> {
     const req = await fetch(`${this._url}${endpoint}`, options);
     if (req.status < 200 || req.status > 299)
       throw new Error(req.status.toString());
